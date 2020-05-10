@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using ClashOfClans;
@@ -29,9 +28,14 @@ namespace ClanManager
             _clashOfClansClient = new ClashOfClansClient(credential.token);
         }
 
-        public async Task<Clan> GetClanDataAsync(string clanTag)
+        public async Task<Clan> GetClanAsync(string clanTag)
         {
             return await _clashOfClansClient.Clans.GetClanAsync(clanTag).ConfigureAwait(false);
+        }
+
+        public async Task<Player> GetPlayerAsync(string playerTag)
+        {
+            return await _clashOfClansClient.Players.GetPlayerAsync(playerTag).ConfigureAwait(false);
         }
     }
 }
