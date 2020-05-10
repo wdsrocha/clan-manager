@@ -14,7 +14,6 @@ namespace ClanManager
     {
         private readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
         private readonly string _applicationName = "Clan Manager";
-        private readonly string _spreadsheetId = "1jRMzCIXji371Et_NPowCPZibqwkdVR-XXau35S92Or8"; // wesleysr1997@gmail.com
         private readonly SheetsService _sheetsService;
 
         public Spreadsheet()
@@ -33,14 +32,14 @@ namespace ClanManager
             });
         }
 
-        public async Task<IList<IList<object>>> GetDataAsync(string range)
+        public async Task<IList<IList<object>>> GetDataAsync(string spreadsheetId, string range)
         {
-            var request = _sheetsService.Spreadsheets.Values.Get(_spreadsheetId, range);
+            var request = _sheetsService.Spreadsheets.Values.Get(spreadsheetId, range);
             var response = await request.ExecuteAsync().ConfigureAwait(false);
             return response.Values;
         }
 
-        public async Task<string> UpdateDataAsync(IList<IList<object>> data, string range)
+        public async Task<string> UpdateDataAsync(string spreadsheetId, IList<IList<object>> data, string range)
         {
             const string valueInputOption = "USER_ENTERED";
 
@@ -58,7 +57,7 @@ namespace ClanManager
                 Data = updateData
             };
 
-            var request = _sheetsService.Spreadsheets.Values.BatchUpdate(requestBody, _spreadsheetId);
+            var request = _sheetsService.Spreadsheets.Values.BatchUpdate(requestBody, spreadsheetId);
 
             var response = await request.ExecuteAsync().ConfigureAwait(false);
 

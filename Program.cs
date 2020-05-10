@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ClashOfClans.Models;
+using Newtonsoft.Json;
 
 namespace ClanManager
 {
@@ -15,10 +17,27 @@ namespace ClanManager
                 throw new ArgumentNullException(nameof(args));
             }
 
+            var requestFile = "request.json";
+            try
+            {
+                requestFile = args[0];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.WriteLine($"Missing request file. Using default request file: {requestFile}");
+            }
+
             var spreadsheetConnector = new Spreadsheet();
 
-            const string clanTag = "#P28LL99R";
-            const string page = "AlphaGamers";
+            Request request;
+            using (var stream = new StreamReader(requestFile))
+            {
+                string json = stream.ReadToEnd();
+                request = JsonConvert.DeserializeObject<Request>(json);
+            }
+
+            string clanTag = request.ClanTag;
+            string page = request.Page;
 
             var coc = new ClashOfClansService();
             var clan = await coc.GetClanAsync(clanTag).ConfigureAwait(false);
@@ -45,50 +64,20 @@ namespace ClanManager
                 }
             }
 
-            var columns = new List<string>
-            {
-                "Name",
-                "Town Hall",
-                "Barbarian King",
-                "Archer Queen",
-                "Barbarian",
-                "Archer",
-                "Goblin",
-                "Giant",
-                "Wall Breaker",
-                "Balloon",
-                "Wizard",
-                "Healer",
-                "Dragon",
-                "P.E.K.K.A",
-                "Minion",
-                "Hog Rider",
-                "Valkyrie",
-                "Golem",
-                "Witch",
-                "Lava Hound",
-                "Baby Dragon",
-                "Sneaky Goblin",
-                "Lightning Spell",
-                "Healing Spell",
-                "Rage Spell",
-                "Jump Spell",
-                "Freeze Spell",
-                "Poison Spell",
-                "Earthquake Spell",
-                "Haste Spell",
-                "Skeleton Spell",
-            };
-
-            var sheet = new List<IList<object>> { columns.ToList<object>() };
+            var columns = request.Columns;
+            var sheet = new List<IList<object>> { columns.Select(column => column.Label).ToList<object>() };
             foreach (var clanMember in clan.MemberList)
             {
                 var data = playerData[clanMember.Tag];
-                var row = columns.Select(column => data.ContainsKey(column) ? data[column] : null);
+                var row = columns.Select(column =>
+                {
+                    var name = column.Name;
+                    return data.ContainsKey(name) ? data[name] : "N/T";
+                });
                 sheet.Add(row.ToList<object>());
             }
 
-            var response = await spreadsheetConnector.UpdateDataAsync(sheet, page).ConfigureAwait(false);
+            var response = await spreadsheetConnector.UpdateDataAsync(request.SpreadsheetId, sheet, page).ConfigureAwait(false);
             Console.WriteLine(response);
         }
     }
