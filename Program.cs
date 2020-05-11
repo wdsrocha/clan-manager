@@ -77,6 +77,14 @@ namespace ClanManager
                 sheet.Add(row.ToList<object>());
             }
 
+            var emptyLine = new List<object>();
+            var lastUpdateMetadata = new List<object> { "", "Última att:", };
+            var lastUpdateValue = new List<object> { "", DateTime.Now.ToString("HH:mm, dd/MM") };
+
+            sheet.Add(emptyLine);
+            sheet.Add(lastUpdateMetadata);
+            sheet.Add(lastUpdateValue);
+
             var response = await spreadsheetConnector.UpdateDataAsync(request.SpreadsheetId, sheet, page).ConfigureAwait(false);
             Console.WriteLine(response);
         }
