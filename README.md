@@ -1,4 +1,4 @@
-# 🎯 Clash of Clans - Clan Manager
+# ⚔️ Clash of Clans - Clan Manager
 
 Automatically fills a Google Sheet with your clan data.
 
