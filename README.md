@@ -1,20 +1,28 @@
 # ⚔️ Clash of Clans - Clan Manager
 
-Automatically fills a Google Sheet with your clan data.
+<div align="center">
+  <p>Automatically fills a Google Sheet with your clan data.</p>
+  <img src="images/result.png">
+</div>
 
-This is currently made for my clan needs, but if you want to know more about it, feel free to contact me (because it's very unlikely that I will keep this README updated 🙃).
+---
 
-## How to create a sheet for your clan
+In order to create one for your clan, follow the steps below.
 
-Share your sheet with `clan-manager@clan-manager-v1.iam.gserviceaccount.com`, giving it editor access.
+1. Create a new Google Sheet
+1. Turn on write access to your Google Sheet ([tutorial][1])
+1. Create a `google_credentials.json` file based on `google_credentials.example.json` using the Google API Credentials data from the previous step
+1. [Create a Clash of Clans API key on their developer website][2]
+1. Create a `coc_credentials.json` file based on `coc_credentials.example.json` using the API key from the previous step
+1. Create a `setup.json` file based on `setup.example.json`. [See the fields descriptions for more details][3]
+1. Run `dotnet run -- setup.json` in your terminal
 
-![Sharing sheet with clan manager](images/share.png)
+With all steps done properly, you should be able to see the Google Sheet populated with your clan data. If this does not work for any reason, feel free to [contact me][email].
 
-Create a `json` file to configure the app. See the `Setup fields description` and `Example setup json` section below for details.
-
-Send me the `json` file via [telegram](https://www.t.me/wdsrocha) or [email](mailto:wesleysr1997@gmail.com) so I can run the script for you (yes, this terrible 🤠).
-
-> If you want to do it yourself, see [here](https://medium.com/@williamchislett/writing-to-google-sheets-api-using-net-and-a-services-account-91ee7e4a291) a nice tutorial on how to use google sheet API with write access (note that you will need to share the sheet with **your** service account) and create a [new COC key](https://developer.clashofclans.com/#/new-key). Clone this repository, remove the "example" inside `coc_credentials.example.json` and `google_credentials.example.json` and substitute their content. After that, just run `dotnet run -- your_setup_file.json`.
+[1]: https://medium.com/@williamchislett/writing-to-google-sheets-api-using-net-and-a-services-account-91ee7e4a291
+[2]: https://developer.clashofclans.com/#/new-key
+[3]: #setup-fields-description
+[email]: mailto:hi@wdsrocha.com
 
 ## Setup fields description
 
@@ -44,25 +52,3 @@ A column consists of `name` and `label` keys.
 
 - `name`: original names on the [COC API Documentation](https://developer.clashofclans.com/#/documentation) (i.e.: "Barbarian King", "Earthquake Spell", etc) which isn't explicit and you'll probably have to guess basing yourself on the names at [COC wiki](https://clashofclans.fandom.com/pt-br/wiki/Wiki_Clash_of_Clans) 😔.
 - `label`: this is what will be displayed on the sheet. Cool if you want to translate or use abbreviations.
-
-## Example setup json
-
-```json
-{
-  "spreadsheetId": "13Iwi6uGG-zRzu10nrGHwhdSmuUI3JoonG4WrE5fi4n0",
-  "clanTag": "#YVOPROUY",
-  "page": "MEGA EMPIRE BR",
-  "columns": [
-    { "name": "Name", "label": "Nome do jogador" },
-    { "name": "Town Hall", "label": "Nível CV" },
-    { "name": "Barbarian King", "label": "Rei" },
-    { "name": "Archer Queen", "label": "Rainha" },
-    { "name": "Grand Warden", "label": "Guardião" },
-    { "name": "Royal Champion", "label": "Campeã" }
-  ]
-}
-```
-
-This will produce the following (without styling 🙃):
-
-![Result](images/result.png)
